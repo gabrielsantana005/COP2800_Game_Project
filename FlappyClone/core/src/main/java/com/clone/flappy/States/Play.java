@@ -20,6 +20,7 @@ public class Play extends State{
     private Texture ground;
     private Vector2 groundPos1, groundPos2;
     private Sound scoreSound;
+    private float scoreVolume = 0.1f; // Sets the volume of the point SFX to 25%.
 
     //Pipe array
     private Array<Pipe> pipes;
@@ -81,7 +82,7 @@ public class Play extends State{
                 score++;
 
                 // Plays a sound after everytime the bird crosses a pipe.
-                scoreSound.play();
+                scoreSound.play(scoreVolume);
             }
 
             //Repos pipe when off-screen

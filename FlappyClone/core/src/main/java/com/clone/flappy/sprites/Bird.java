@@ -16,6 +16,7 @@ public class Bird {
     private Animation birdAnimation;
     private Texture texture;
     private Sound flapSound;
+    private float flapVolume = 0.1f; // Sets the volume of the flap SFX to 25%.
 
     //Constructor
     public Bird(int x, int y){
@@ -26,7 +27,7 @@ public class Bird {
         bounds = new Rectangle(x, y, texture.getWidth() / 3, texture.getHeight());
 
         // Loads the sound effect.
-        flapSound = Gdx.audio.newSound(Gdx.files.internal("flap.wav"));
+        flapSound = Gdx.audio.newSound(Gdx.files.internal("Flap.wav"));
     }
 
     public void update(float deltaTime){
@@ -57,7 +58,7 @@ public class Bird {
         velocity.y = 250;
 
         // Plays the flap sound on every jump.
-        flapSound.play();
+        flapSound.play(flapVolume);
     }
 
     public Rectangle getBounds() {
