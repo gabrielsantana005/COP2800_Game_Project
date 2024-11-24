@@ -22,22 +22,37 @@ public class Play extends State{
     //Pipe array
     private Array<Pipe> pipes;
 
+    //Score
+    private int score;
+    private Texture[] numTextures;
+
 
     public Play(GameStateManager gameStateManager){
         super(gameStateManager);
         flappyBird = new Bird(50, 100);
         camera.setToOrtho(false, GameScreen.screenWidth / 2, GameScreen.screenHeight / 2);
+
         backGround = new Texture("background-day.png");
         ground = new Texture("base.png");
+
         groundPos1 = new Vector2(camera.position.x - camera.viewportWidth / 2, ground_Y_Offset);
         groundPos2 = new Vector2((camera.position.x - camera.viewportWidth / 2) + ground.getWidth(), ground_Y_Offset);
+
+        score = 0;
 
         pipes = new Array<Pipe>();
         for (int i = 1; i <= pipeCount; i++) {
             pipes.add(new Pipe(i * (pipeSpacing + Pipe.pipeWidth)));
         }
 
+        //Load number textures
+        numTextures = new Texture[10];
+        for(int i = 0; i < 10; i++){
+            numTextures[i] = new Texture(i + ".png");
+        }
+
     }
+
 
     @Override
     protected void handleInput() {
@@ -45,6 +60,7 @@ public class Play extends State{
             flappyBird.jump();
         }
     }
+
 
     @Override
     protected void update(float deltaTime) {
@@ -54,14 +70,27 @@ public class Play extends State{
         camera.position.x = flappyBird.getPosition().x + 80;
 
         for (Pipe pipe : pipes){
+            //Increments score if pipe is passed
+            if(!pipe.isPassed() && flappyBird.getPosition().x > pipe.getPosTopPipe().x + pipe.getTopPipe().getWidth()){
+                pipe.markPassed();
+                score++;
+            }
+
+            //Repos pipe when off-screen
             if (camera.position.x - (camera.viewportWidth / 2) > pipe.getPosTopPipe().x + pipe.getTopPipe().getWidth()){
                 pipe.reposition(pipe.getPosTopPipe().x + ((Pipe.pipeWidth + pipeSpacing) * pipeCount));
             }
         }
-        if (flappyBird.getPosition().y <= ground.getHeight() + ground_Y_Offset)
-            gameStateManager.set(new Play(gameStateManager));
+
+        //Checks collision
+        if (flappyBird.getPosition().y <= ground.getHeight() + ground_Y_Offset){
+            gameStateManager.set(new GameOver(gameStateManager));
+        }
+
         camera.update();
+
     }
+
 
     @Override
     public void render(SpriteBatch spriteBatch) {
@@ -76,8 +105,10 @@ public class Play extends State{
         for (Pipe pipe : pipes){
             spriteBatch.draw(pipe.getTopPipe(), pipe.getPosTopPipe().x, pipe.getPosTopPipe().y);
             spriteBatch.draw(pipe.getBottomPipe(), pipe.getPosBottomPipe().x, pipe.getPosBottomPipe().y);
+
+            //Set new state if pipe is touched
             if (pipe.collides(flappyBird.getBounds())) {
-                gameStateManager.set(new Play(gameStateManager));
+                gameStateManager.set(new GameOver(gameStateManager));
             }
         }
 
@@ -85,8 +116,12 @@ public class Play extends State{
         spriteBatch.draw(ground, groundPos1.x, groundPos1.y);
         spriteBatch.draw(ground, groundPos2.x, groundPos2.y);
 
+        //Draw Score
+        drawScore(spriteBatch, score, camera.position.x - 15, camera.position.y - -125); // Changes score pos
+
         spriteBatch.end();
     }
+
 
     public void updateGround() {
         if(camera.position.x - (camera.viewportWidth / 2) > groundPos1.x + ground.getWidth())
@@ -95,13 +130,32 @@ public class Play extends State{
             groundPos2.add(ground.getWidth() * 2, 0);
     }
 
+
+    public void drawScore(SpriteBatch spriteBatch, int score, float x, float y){
+        String scoreString = String.valueOf(score);
+        float numberWidth = 20; // Width of each number
+
+        for (int i = 0; i < scoreString.length(); i++) {
+            char digit = scoreString.charAt(i);
+            int digitValue = Character.getNumericValue(digit);
+            spriteBatch.draw(numTextures[digitValue], x + (i * numberWidth), y);
+        }
+
+    }
+
+
     @Override
     public void dispose() {
         backGround.dispose();
         flappyBird.dispose();
         ground.dispose();
+
         for(Pipe pipe : pipes) {
             pipe.dispose();
+        }
+
+        for(Texture texture : numTextures){
+            texture.dispose();
         }
     }
 

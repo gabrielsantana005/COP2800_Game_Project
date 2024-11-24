@@ -15,7 +15,7 @@ public class Pipe {
     private Vector2 posTopPipe, posBottomPipe;
     private Rectangle topBounds, bottomBounds;
     private Random rand;
-
+    private boolean isPassed;
 
     //Constructor
     public Pipe(float x) {
@@ -28,10 +28,13 @@ public class Pipe {
 
         topBounds = new Rectangle(posTopPipe.x, posTopPipe.y, topPipe.getWidth(), topPipe.getHeight());
         bottomBounds = new Rectangle(posBottomPipe.x, posBottomPipe.y,bottomPipe.getWidth(), bottomPipe.getHeight());
+
+        isPassed = false;
     }
 
     //Getters
     public Texture getTopPipe() {
+
         return topPipe;
     }
 
@@ -40,10 +43,12 @@ public class Pipe {
     }
 
     public Vector2 getPosTopPipe() {
+
         return posTopPipe;
     }
 
     public Vector2 getPosBottomPipe() {
+
         return posBottomPipe;
     }
 
@@ -52,6 +57,15 @@ public class Pipe {
         posBottomPipe.set(x, posTopPipe.y - pipeGap - bottomPipe.getHeight());
         topBounds.setPosition(posTopPipe.x, posTopPipe.y);
         bottomBounds.setPosition(posBottomPipe.x, posBottomPipe.y);
+        isPassed = true;
+    }
+
+    public boolean isPassed(){
+        return isPassed;
+    }
+
+    public void markPassed(){
+        isPassed = true;
     }
 
     public boolean collides(Rectangle player) {

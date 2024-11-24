@@ -10,10 +10,26 @@ public class Menu extends State {
     private Texture background;
     private Texture playButton;
 
+    //Used to center menu button
+    private float buttonX;
+    private float buttonY;
+
+    // Used for button animation
+    private float scale = 1f; //Button scale
+    private boolean growing = true; //Is button pulsing
+    private float scaleSpeed = 0.3f; //pulse speed
+
     public Menu(GameStateManager gameStateManager){
         super(gameStateManager);
+
+        //Load textures
         background = new Texture("background-day.png");
-        playButton = new Texture("StartButton.png");
+        playButton = new Texture("message.png");
+
+        //Buttons center x,y cords
+        buttonX = (GameScreen.screenWidth - playButton.getWidth()) / 2f;
+        buttonY = (GameScreen.screenHeight - playButton.getHeight()) / 2f;
+
     }
 
 
@@ -28,6 +44,15 @@ public class Menu extends State {
     @Override
     public void update(float deltaTime) {
         handleInput();
+
+        // Animation for bird
+        if (growing) {
+            scale += deltaTime * scaleSpeed; // increase scale slowly
+            if (scale >= 1.2f) growing = false; // checks if button is too big
+        } else {
+            scale -= deltaTime * scaleSpeed;  // Decrease slowly
+            if (scale <= 1f ) growing = true; // check if button is too small
+        }
     }
 
 
@@ -35,9 +60,16 @@ public class Menu extends State {
     public void render(SpriteBatch spriteBatch) {
         spriteBatch.begin();
 
+        //Draw background
         spriteBatch.draw(background, 0, 0, GameScreen.screenWidth, GameScreen.screenHeight);
-        spriteBatch.draw(playButton, (GameScreen.screenWidth / 2) - (GameScreen.screenHeight / 2),
-            GameScreen.screenHeight / 2);
+
+        //Draw button
+        float buttonWidth = playButton.getWidth() * scale;
+        float buttonHeight = playButton.getHeight() * scale;
+        spriteBatch.draw(playButton, buttonX - (buttonWidth - playButton.getWidth()) / 2f,
+                buttonY - (buttonHeight - playButton.getHeight()) / 2f,
+                buttonWidth, buttonHeight);
+
 
         spriteBatch.end();
     }
