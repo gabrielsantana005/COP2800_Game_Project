@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.Gdx;
 
 public class Bird {
     private static final int gravity = -15;
@@ -14,6 +16,7 @@ public class Bird {
     private Animation birdAnimation;
     private Texture texture;
     private Texture flappyBird;
+    private Sound flapSound;
 
     //Constructor
     public Bird(int x, int y){
@@ -22,6 +25,9 @@ public class Bird {
         texture = new Texture("FlappyBird.png");
         birdAnimation = new Animation(new TextureRegion(texture), 3, 0.5f);
         bounds = new Rectangle(x, y, texture.getWidth() / 3, texture.getHeight());
+
+        // Loads the sound effect.
+        flapSound = Gdx.audio.newSound(Gdx.files.internal("flap.wav"));
     }
 
     public void update(float deltaTime){
@@ -50,6 +56,9 @@ public class Bird {
 
     public void jump() {
         velocity.y = 250;
+
+        // Plays the flap sound on every jump.
+        flapSound.play();
     }
 
     public Rectangle getBounds() {
@@ -58,5 +67,10 @@ public class Bird {
 
     public void dispose() {
        texture.dispose();
+
+       // Dispose of the sound effect.
+        if (flapSound != null) {
+            flapSound.dispose();
+        }
     }
 }

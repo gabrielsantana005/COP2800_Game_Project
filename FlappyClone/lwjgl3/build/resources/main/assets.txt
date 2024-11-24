@@ -1,3 +1,5 @@
+DefaultMusic.mp3
+Flap.wav
 FlappyBird.png
 StartButton.png
 background-day.png
