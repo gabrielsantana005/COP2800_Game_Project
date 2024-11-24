@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import com.clone.flappy.GameScreen;
 import com.clone.flappy.sprites.Bird;
 import com.clone.flappy.sprites.Pipe;
+import com.badlogic.gdx.audio.Sound;
 
 public class Play extends State{
     private static final int pipeSpacing = 125;
@@ -18,6 +19,7 @@ public class Play extends State{
     private Texture backGround;
     private Texture ground;
     private Vector2 groundPos1, groundPos2;
+    private Sound scoreSound;
 
     //Pipe array
     private Array<Pipe> pipes;
@@ -51,6 +53,9 @@ public class Play extends State{
             numTextures[i] = new Texture(i + ".png");
         }
 
+        //Loads the score sound effect.
+        scoreSound = Gdx.audio.newSound(Gdx.files.internal("Point.wav"));
+
     }
 
 
@@ -74,6 +79,9 @@ public class Play extends State{
             if(!pipe.isPassed() && flappyBird.getPosition().x > pipe.getPosTopPipe().x + pipe.getTopPipe().getWidth()){
                 pipe.markPassed();
                 score++;
+
+                // Plays a sound after everytime the bird crosses a pipe.
+                scoreSound.play();
             }
 
             //Repos pipe when off-screen
@@ -157,6 +165,9 @@ public class Play extends State{
         for(Texture texture : numTextures){
             texture.dispose();
         }
+
+        //Dispose of the score sound.
+        scoreSound.dispose();
     }
 
 }
