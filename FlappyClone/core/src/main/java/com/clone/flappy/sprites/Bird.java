@@ -15,7 +15,6 @@ public class Bird {
     private Rectangle bounds;
     private Animation birdAnimation;
     private Texture texture;
-    private Texture flappyBird;
     private Sound flapSound;
 
     //Constructor
@@ -62,6 +61,7 @@ public class Bird {
     }
 
     public Rectangle getBounds() {
+
         return bounds;
     }
 
