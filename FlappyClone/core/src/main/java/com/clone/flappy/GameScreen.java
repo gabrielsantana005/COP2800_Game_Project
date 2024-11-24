@@ -2,6 +2,7 @@ package com.clone.flappy;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.clone.flappy.States.GameStateManager;
 import com.clone.flappy.States.Menu;
@@ -15,6 +16,7 @@ public class GameScreen extends ApplicationAdapter {
 
     private GameStateManager gameStateManager;
     private SpriteBatch spriteBatch;
+    private Music music;
 
     SpriteBatch batch;
 
@@ -22,6 +24,10 @@ public class GameScreen extends ApplicationAdapter {
     public void create(){
         batch = new SpriteBatch();
         gameStateManager = new GameStateManager();
+        music = Gdx.audio.newMusic (Gdx.files.internal("DefaultMusic.mp3"));
+        music.setLooping(true);
+        music.setVolume(0.1f);
+        music.play();
         Gdx.gl.glClearColor(1, 0, 0, 1);
         gameStateManager.push(new Menu(gameStateManager));
     }
@@ -33,5 +39,11 @@ public class GameScreen extends ApplicationAdapter {
         Gdx.gl.glClear(gl20.GL_COLOR_BUFFER_BIT);
         gameStateManager.update(Gdx.graphics.getDeltaTime());
         gameStateManager.render(batch);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        music.dispose();
     }
 }
