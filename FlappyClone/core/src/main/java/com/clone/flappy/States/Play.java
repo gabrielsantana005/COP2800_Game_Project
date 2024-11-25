@@ -92,7 +92,7 @@ public class Play extends State{
 
         //Checks collision
         if (flappyBird.getPosition().y <= ground.getHeight() + ground_Y_Offset){
-            gameStateManager.set(new GameOver(gameStateManager));
+            gameStateManager.set(new GameOver(gameStateManager, score));
         }
 
         camera.update();
@@ -116,7 +116,7 @@ public class Play extends State{
 
             //Set new state if pipe is touched
             if (pipe.collides(flappyBird.getBounds())) {
-                gameStateManager.set(new GameOver(gameStateManager));
+                gameStateManager.set(new GameOver(gameStateManager, score));
             }
         }
 

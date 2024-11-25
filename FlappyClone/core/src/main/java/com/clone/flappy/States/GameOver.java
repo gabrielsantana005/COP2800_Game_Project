@@ -1,50 +1,52 @@
 package com.clone.flappy.States;
 
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.clone.flappy.GameScreen;
+import com.clone.flappy.States.GameStateManager;
+import com.clone.flappy.States.Menu;
+import com.clone.flappy.States.State;
 
 public class GameOver extends State {
     private Texture background, gameOverText, statsBox, medal;
     private float scale = 1f;
     private int currentScore, highScore;
+    private BitmapFont scoreFont;
 
-    //Game over text
-    private float txtX;
-    private float txtY;
+    // UI Element positions
+    private float centerX;
+    private float centerY;
 
-    //Stats box
-    private float statsBoxX;
-    private float statsBoxY;
+    // Vertical spacing between elements
+    private final float VERTICAL_SPACING = 50f; // Reduced spacing
 
-    //Medal
-    private float medalX;
-    private float medalY;
-
-
-    public GameOver(GameStateManager gameStateManager) {
+    public GameOver(GameStateManager gameStateManager, int score) {
         super(gameStateManager);
+        this.currentScore = score;
 
-        //Textures
+        // Initialize camera
+        camera.setToOrtho(false, GameScreen.screenWidth, GameScreen.screenHeight);
+
+        // Calculate center of screen based on camera
+        centerX = camera.viewportWidth / 2f;
+        centerY = camera.viewportHeight / 2f;
+
+        // Load textures
         background = new Texture("background-day.png");
-        gameOverText = new Texture("gameover.png");
-        statsBox = new Texture("StatsBox.png");
+        statsBox = new Texture("box.png");
+        gameOverText = new Texture("youDied.png");
 
-        //Logic for medal Texture output
-        if (currentScore >= 50) {
-            medal = new Texture("platinumCoin.png");
-        } else if (currentScore >= 25) {
-            medal = new Texture("goldCoin.png");
-        } else if (currentScore >= 10) {
-            medal = new Texture("silverMedal.png");
-        } else {
-            medal = new Texture("bronzeCoin.png");
-        }
 
-        //Player highscore
+        // Initialize font
+        scoreFont = new BitmapFont();
+        scoreFont.setColor(Color.WHITE);
+        scoreFont.getData().setScale(2f); // Make the font bigger
+
+        // Handle high score
         Preferences prefs = Gdx.app.getPreferences("FlappyBirdHighScores");
         highScore = prefs.getInteger("highScore", 0);
         if (currentScore > highScore) {
@@ -52,56 +54,56 @@ public class GameOver extends State {
             prefs.putInteger("highScore", highScore);
             prefs.flush();
         }
-
-        //Scale txt
-        //Int at end used for moving txt by pixels (NO TOUCHY!!!)
-        txtX = (GameScreen.screenWidth / 2f) - (gameOverText.getWidth() / 2f) - 80;
-        txtY = (GameScreen.screenHeight / 2f) - (gameOverText.getHeight() / 2f)  - 100;
-
-        //Scale Stats box
-        statsBoxX = (GameScreen.screenWidth / 2f) - (statsBox.getWidth() / 2f) - 80;
-        statsBoxY = (GameScreen.screenHeight / 2f) - (statsBox.getHeight() / 2f) - 201;
-
-        //Scale medal
-        medalX = (GameScreen.screenWidth / 2f) - (medal.getWidth() / 2f) - 112;
-        medalY = (GameScreen.screenHeight / 2f) - (medal.getHeight() / 2f) - 205;
-
-
     }
-
 
     @Override
     public void handleInput() {
-
+        if (Gdx.input.justTouched()) {
+            gameStateManager.set(new Menu(gameStateManager));
+        }
     }
 
     @Override
     public void update(float deltaTime) {
         handleInput();
+        camera.update();
     }
 
     @Override
     public void render(SpriteBatch spriteBatch) {
+        // Set up camera projection
+        spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
 
-        //Draw background
+        // Draw background
         spriteBatch.draw(background, 0, 0, GameScreen.screenWidth, GameScreen.screenHeight);
 
-        //Gameover text
-        float txtWidth = gameOverText.getWidth() * scale;
-        float txtHeight = gameOverText.getHeight() * scale;
-        spriteBatch.draw(gameOverText, txtX, txtY, txtWidth, txtHeight);
+        //Draw Game over text
+        float gameOverX = centerX - (gameOverText.getWidth() * scale / 2f);
+        float gameOverY = centerY - (gameOverText.getHeight() * scale / 2f) + 200;
+        spriteBatch.draw(gameOverText, gameOverX, gameOverY,
+                gameOverText.getWidth() * scale,
+                gameOverText.getHeight() * scale);
 
-        //Stats box
-        float statsBoxWidth = statsBox.getWidth() * scale;
-        float statsBoxHeight = statsBox.getHeight() * scale;
-        spriteBatch.draw(statsBox, statsBoxX, statsBoxY, statsBoxWidth, statsBoxHeight);
 
-        //medal
-        float medalWidth = medal.getWidth() * scale;
-        float medalHeight = medal.getHeight() * scale;
-        spriteBatch.draw(medal, medalX, medalY, medalWidth, medalHeight);
+        // Draw stats box
+        float statsBoxX = centerX - (statsBox.getWidth() * scale / 2f);
+        float statsBoxY = centerY - (statsBox.getHeight() * scale / 2f);
+        spriteBatch.draw(statsBox, statsBoxX, statsBoxY,
+                statsBox.getWidth() * scale,
+                statsBox.getHeight() * scale);
 
+        // Draw scores
+        String scoreText = "Score: " + currentScore;
+        String highScoreText = "Best: " + highScore;
+
+        // Position scores inside the stats box
+        float scoreX = statsBoxX + 200; // Adjust these values to position the text
+        float scoreY = statsBoxY + statsBox.getHeight() - 50; // where you want inside the box
+        float highScoreY = scoreY - 50; // Space between score and high score
+
+        scoreFont.draw(spriteBatch, scoreText, scoreX, scoreY);
+        scoreFont.draw(spriteBatch, highScoreText, scoreX, highScoreY);
 
         spriteBatch.end();
     }
@@ -111,6 +113,6 @@ public class GameOver extends State {
         background.dispose();
         gameOverText.dispose();
         statsBox.dispose();
-
+        scoreFont.dispose(); // Don't forget to dispose the font
     }
 }

@@ -3,6 +3,7 @@ package com.clone.flappy.States;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.clone.flappy.GameScreen;
 
 public abstract class State {
     protected OrthographicCamera camera;
@@ -12,6 +13,7 @@ public abstract class State {
     protected State (GameStateManager GSM){
         this.gameStateManager = GSM;
         camera = new OrthographicCamera();
+        camera.setToOrtho(false, GameScreen.screenWidth, GameScreen.screenHeight);
         mouse = new Vector3();
 
 

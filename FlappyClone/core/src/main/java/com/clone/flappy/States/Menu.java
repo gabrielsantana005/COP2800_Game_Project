@@ -1,6 +1,7 @@
 package com.clone.flappy.States;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.clone.flappy.GameScreen;
@@ -19,12 +20,18 @@ public class Menu extends State {
     private boolean growing = true; //Is button pulsing
     private float scaleSpeed = 0.3f; //pulse speed
 
+    private OrthographicCamera camera;
+
     public Menu(GameStateManager gameStateManager){
         super(gameStateManager);
 
         //Load textures
         background = new Texture("background-day.png");
         playButton = new Texture("message.png");
+
+        // Initialize camera
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, GameScreen.screenWidth, GameScreen.screenHeight);
 
         //Buttons center x,y cords
         buttonX = (GameScreen.screenWidth - playButton.getWidth()) / 2f;
@@ -53,11 +60,16 @@ public class Menu extends State {
             scale -= deltaTime * scaleSpeed;  // Decrease slowly
             if (scale <= 1f ) growing = true; // check if button is too small
         }
+
+        // Ensure camera stays centered
+        camera.position.set(GameScreen.screenWidth/2f, GameScreen.screenHeight/2f, 0);
+        camera.update();
     }
 
 
     @Override
     public void render(SpriteBatch spriteBatch) {
+        spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
 
         //Draw background

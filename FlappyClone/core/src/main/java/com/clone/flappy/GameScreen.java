@@ -35,7 +35,6 @@ public class GameScreen extends ApplicationAdapter {
 
     @Override
     public void render(){
-
         Gdx.gl.glClear(gl20.GL_COLOR_BUFFER_BIT);
         gameStateManager.update(Gdx.graphics.getDeltaTime());
         gameStateManager.render(batch);

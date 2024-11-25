@@ -34,7 +34,6 @@ public class Pipe {
 
     //Getters
     public Texture getTopPipe() {
-
         return topPipe;
     }
 
@@ -43,12 +42,10 @@ public class Pipe {
     }
 
     public Vector2 getPosTopPipe() {
-
         return posTopPipe;
     }
 
     public Vector2 getPosBottomPipe() {
-
         return posBottomPipe;
     }
 
@@ -57,7 +54,7 @@ public class Pipe {
         posBottomPipe.set(x, posTopPipe.y - pipeGap - bottomPipe.getHeight());
         topBounds.setPosition(posTopPipe.x, posTopPipe.y);
         bottomBounds.setPosition(posBottomPipe.x, posBottomPipe.y);
-        isPassed = true;
+        isPassed = false;
     }
 
     public boolean isPassed(){
