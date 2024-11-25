@@ -12,6 +12,7 @@ DefaultMusic.mp3
 Flap.wav
 FlappyBird.png
 Point.wav
+YouDied.wav
 background-day.png
 base.png
 box.png

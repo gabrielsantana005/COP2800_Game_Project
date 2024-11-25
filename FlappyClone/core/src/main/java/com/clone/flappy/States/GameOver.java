@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.clone.flappy.GameScreen;
+import com.badlogic.gdx.audio.Sound;
 import com.clone.flappy.States.GameStateManager;
 import com.clone.flappy.States.Menu;
 import com.clone.flappy.States.State;
@@ -16,6 +17,8 @@ public class GameOver extends State {
     private float scale = 1f;
     private int currentScore, highScore;
     private BitmapFont scoreFont;
+    private Sound deathSound;
+    private float deathVolume = 0.1f;
 
     // UI Element positions
     private float centerX;
@@ -40,6 +43,11 @@ public class GameOver extends State {
         statsBox = new Texture("box.png");
         gameOverText = new Texture("youDied.png");
 
+        // Loads death sound effect.
+        deathSound = Gdx.audio.newSound(Gdx.files.internal("YouDied.wav"));
+
+        // Plays death SFX when the GameOver screen is displayed.
+        deathSound.play(deathVolume);
 
         // Initialize font
         scoreFont = new BitmapFont();
