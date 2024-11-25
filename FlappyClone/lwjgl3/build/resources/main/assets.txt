@@ -12,14 +12,10 @@ DefaultMusic.mp3
 Flap.wav
 FlappyBird.png
 Point.wav
-StatsBox.png
 background-day.png
 base.png
-bronzeCoin.png
-gameover.png
-goldCoin.png
+box.png
 message.png
 pipe-green.png
-platinumCoin.png
-silverMedal.png
 top-pipe-green.png
+youDied.png

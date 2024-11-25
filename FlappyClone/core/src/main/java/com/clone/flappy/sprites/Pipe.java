@@ -57,7 +57,7 @@ public class Pipe {
         posBottomPipe.set(x, posTopPipe.y - pipeGap - bottomPipe.getHeight());
         topBounds.setPosition(posTopPipe.x, posTopPipe.y);
         bottomBounds.setPosition(posBottomPipe.x, posBottomPipe.y);
-        isPassed = true;
+        isPassed = false;
     }
 
     public boolean isPassed(){
